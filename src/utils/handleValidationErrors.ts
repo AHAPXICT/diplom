@@ -1,8 +1,9 @@
 import type { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
+import router from "../routes/UserController.ts";
 
 
-export default function validate(
+function validate(
     req: Request,
     res: Response,
     next: NextFunction
@@ -15,3 +16,5 @@ export default function validate(
 
     next();
 }
+
+export default validate;

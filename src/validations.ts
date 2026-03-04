@@ -1,5 +1,6 @@
 import {body} from 'express-validator'
 
+
 export const registerValidation = [
     body("email", 'Неверный формат почты').isEmail(),
     body("password", 'Введите пароль (от 8 до 64 символов)').isLength({min: 8, max: 64})    ,
