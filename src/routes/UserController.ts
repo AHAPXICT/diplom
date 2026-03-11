@@ -31,11 +31,11 @@ router.post('/register', registerValidation, handleValidationErrors, async (req:
         }
     })
 
-    const token = jwt.sign({id: user.id},
-        `${process.env.DATABASE_URL}`,
-        {
-            expiresIn: '30d',
-        })
+    const token = jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '30d' }
+    )
     return res.status(200).json({
         user, token
     })
@@ -61,11 +61,11 @@ router.post('/login', loginValidation, handleValidationErrors, async (req: Reque
         })
     }
 
-    const token = jwt.sign({id: user.id},
-        `${process.env.DATABASE_URL}`,
-        {
-            expiresIn: '30d',
-        })
+    const token = jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '30d' }
+    )
 
     return res.status(200).json({
         token
@@ -75,7 +75,7 @@ router.post('/login', loginValidation, handleValidationErrors, async (req: Reque
 router.get('/getMe', async (req: Request, res: Response) => {
     const user = await prisma.user.findUnique(
         {
-            where: {email: req.body.email}
+            where: {username: req.body.username}
         })
 
     if (!user) {

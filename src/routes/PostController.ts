@@ -3,82 +3,85 @@ import checkAuth from "../utils/checkAuth.ts";
 import {postCreateValidation} from "../validations.ts";
 import handleValidationErrors from "../utils/handleValidationErrors.ts";
 import {prisma} from "../../lib/prisma.ts";
+import {checkPostOwner} from "../utils/checkPostOwner.ts";
+import {Post} from "../generated/prisma/client.ts";
+import checkPostId from "../utils/checkPostId.ts";
 
 const router = Router()
 
 
-router.post('', checkAuth(), postCreateValidation, handleValidationErrors, async (req: Request, res: Response) => {
+router.post('/', checkAuth(), postCreateValidation, handleValidationErrors, async (req: Request, res: Response) => {
     const post = await prisma.post.create({
         data: {
             title: req.body.title,
-            description: req.body.text,
-            photo: req.body.imageUrl,
-            authorId: req.body.authorId
+            description: req.body.description,
+            photo: req.body.photo,
+            authorId: Number(req.userId)
         }
     });
-    res.json(post)
+    const {authorId, ...postData} = post
+    res.json(postData)
 })
 
 
-router.get('', async (req: Request, res: Response) => {
-    const posts = await prisma.post.findMany({
-        where: {}
-    })
-    //const posts = await PostModel.find().populate({path: "user", select: ["fullName", "avatarUrl"]}).exec()
-    res.json(posts)
-})
-
-// router.get('/:id', async (req, res) => {
-//     const postId = getPostId(req)
-//
-//     const post = await prisma.post.update({
-//         where: {
-//             id: postId
-//         },
-//         data: {
-//             viewsCount: {
-//                 increment(1)
-//             }
-//         }
+// router.get('/:username', async (req: Request, res: Response) => {
+//     const posts = await prisma.post.findMany({
+//         where: {authorId: req.userId}
 //     })
-//     if (!post) {
-//         return res.json({message: 'Статья не найдена'})
-//     }
-//     return res.json(post)
+//
+//     const newPosts = posts.map(({authorId, ...rest}) => rest)
+//     res.json(newPosts)
 // })
 
-router.delete('/:id', checkAuth(), async (req: Request, res: Response) => {
-    const postId = getPostId(req)
+router.get('/:id', checkPostId(), async (req, res) => {
+    const post = req.post as Post
 
-    const post = await prisma.post.delete(
+    const updatedPost = await prisma.post.update({
+        where: { id: post.id },
+        data: {
+            viewsCount: { increment: 1 }
+        },
+        include: {
+            author: {
+                select: {
+                    username: true
+                }
+            }
+        }
+    })
+
+    const { authorId, ...postData } = updatedPost
+
+    return res.json(postData)
+})
+
+router.delete('/:id', checkAuth(), checkPostOwner(), checkPostId(), async (req: Request, res: Response) => {
+    const post = req.post as Post
+
+    const deletedPost = await prisma.post.delete(
         {
             where: {
-                id: postId
+                id: post.id
             }
         }
     )
 
-    if (!post) {
-        return res.json({message: 'Статья не найдена'})
-    }
     res.json({success: true})
 })
 
-router.patch('/:id', checkAuth(), postCreateValidation, handleValidationErrors, async (req: Request, res: Response) => {
-    const postId = getPostId(req)
+router.patch('/:id', checkAuth(), checkPostOwner(), checkPostId(), postCreateValidation, handleValidationErrors, async (req: Request, res: Response) => {
+    const post = req.post as Post
 
     await prisma.post.update({
         where: {
-            id: postId
+            id: post.id
         },
     data: {
         title: req.body?.title,
-        description: req.body?.text,
-        photo: req.body?.imageUrl,
+        description: req.body?.description,
+        photo: req.body?.photo,
     }})
     res.json({message: 'Success'})
 })
-
-const getPostId = (req: Request): number => Number(req.params.id)
 
 export default router

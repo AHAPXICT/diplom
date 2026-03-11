@@ -15,7 +15,6 @@ export const loginValidation = [
 
 export const postCreateValidation = [
     body("title", 'Введите заголовок статьи (от 3 до 128 символов)').isLength({min: 3, max: 128}).isString(),
-    body("text", 'Введите текст статьи (от 10 до 2000 символов)').isLength({min: 10, max: 2000}).isString(),
-    body("tags", 'Неверный формат тэгов').optional().isString(),
+    body("description", 'Введите текст статьи (от 10 до 2000 символов)').isLength({min: 10, max: 2000}).isString(),
     body("imageUrl", 'Неверная ссылка на изображение').optional().isURL(),
 ]

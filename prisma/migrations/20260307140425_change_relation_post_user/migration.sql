@@ -1,15 +1,15 @@
 /*
   Warnings:
 
-  - You are about to drop the column `userId` on the `Post` table. All the data in the column will be lost.
+  - You are about to drop the column `authorName` on the `Post` table. All the data in the column will be lost.
   - Added the required column `authorId` to the `Post` table without a default value. This is not possible if the table is not empty.
 
 */
 -- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_userId_fkey";
+ALTER TABLE "Post" DROP CONSTRAINT "Post_authorName_fkey";
 
 -- AlterTable
-ALTER TABLE "Post" DROP COLUMN "userId",
+ALTER TABLE "Post" DROP COLUMN "authorName",
 ADD COLUMN     "authorId" INTEGER NOT NULL;
 
 -- AddForeignKey

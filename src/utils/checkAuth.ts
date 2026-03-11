@@ -6,8 +6,8 @@ export default () => (req: Request, res: Response, next: NextFunction) => {
     const token = (req.headers.authorization || '').replace('Bearer ', '')
     if (token) {
         try {
-            const decoded = jwt.verify(token, `${process.env.DATABASE_URL}`)
-            req.body.userId = decoded
+            const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number }
+            req.userId = decoded.id
             next()
         }
         catch (err) {
