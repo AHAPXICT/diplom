@@ -188,7 +188,7 @@ export interface PrismaClient<
    * `prisma.post`: Exposes CRUD operations for the **Post** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Posts
+    * // Fetch zero or more posts
     * const posts = await prisma.post.findMany()
     * ```
     */

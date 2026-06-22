@@ -6,31 +6,37 @@ import {Router} from "express"
 import {loginValidation, registerValidation} from "../validations.ts";
 import handleValidationErrors from "../utils/handleValidationErrors.ts";
 import "dotenv/config";
+import _ from "lodash";
+import checkAuth from "../utils/checkAuth.ts";
 
 
 const router = Router();
 
 router.post('/register', registerValidation, handleValidationErrors, async (req: Request, res: Response) => {
-    const password = req.body.password
-    const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(password, salt)
+
+    console.log(req.body)
 
     if(await prisma.user.findUnique({where: {email: req.body.email}})) {
         return res.status(400).json({message: 'Пользователь уже существует'})
     }
 
-    const user = await prisma.user.create({
+    if(await prisma.user.findUnique({where: {username: req.body.username}})) {
+        return res.status(400).json(({message: 'Это имя уже занято'}))
+    }
+
+    const password = req.body.password
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+
+    const userPrisma = await prisma.user.create({
         data: {
             username: req.body.username,
             email: req.body.email,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            age: req.body.age,
-            profilePicture: req.body.profilePicture,
-            password: hash,
+            password: hash
         }
     })
 
+    const user = _.pick(userPrisma, ['id', 'email', 'username', 'birthday', 'profilePicture', 'createdAt', 'rating'])
     const token = jwt.sign(
         { id: user.id },
         process.env.JWT_SECRET as string,
@@ -42,18 +48,19 @@ router.post('/register', registerValidation, handleValidationErrors, async (req:
 })
 
 router.post('/login', loginValidation, handleValidationErrors, async (req: Request, res: Response) => {
-    const user = await prisma.user.findUnique(
+    console.log('login')
+    const userPrisma = await prisma.user.findUnique(
         {
             where: {email: req.body.email}
         })
 
-    if (!user) {
+    if (!userPrisma) {
         return res.status(401).json({
             message: `Неверный логин или пароль`,
         })
     }
 
-    const isValidPass = await bcrypt.compare(req.body.password, user.password)
+    const isValidPass = await bcrypt.compare(req.body.password, userPrisma.password)
 
     if (!isValidPass) {
         return res.status(401).json({
@@ -61,6 +68,7 @@ router.post('/login', loginValidation, handleValidationErrors, async (req: Reque
         })
     }
 
+    const user = _.pick(userPrisma, ['id', 'email', 'username', 'birthday', 'profilePicture', 'createdAt', 'rating'])
     const token = jwt.sign(
         { id: user.id },
         process.env.JWT_SECRET as string,
@@ -68,21 +76,32 @@ router.post('/login', loginValidation, handleValidationErrors, async (req: Reque
     )
 
     return res.status(200).json({
-        token
+        token, user
     })
 })
 
-router.get('/getMe', async (req: Request, res: Response) => {
-    const user = await prisma.user.findUnique(
+router.get('/user', async (req: Request, res: Response) => {
+    const userPrisma = await prisma.user.findUnique(
         {
             where: {username: req.body.username}
         })
 
-    if (!user) {
+    if (!userPrisma) {
         return res.status(401).json({message: 'Не удалось получить пользователя'})
     }
-    const {password, ...userData} = user
-    return res.status(200).json(userData)
+    const user = _.pick(userPrisma, ['id', 'email', 'username', 'birthday', 'profilePicture', 'createdAt', 'rating'])
+    //user.commentsCount = prisma.user.count
+    return res.status(200).json(user)
 })
+
+router.get("/me", checkAuth(), async (req, res) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id: Number(req.userId)
+        }
+    });
+
+    res.json(user);
+});
 
 export default router

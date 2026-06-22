@@ -9,16 +9,20 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsx index.ts"
+    "dev": "npx tsx index.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.2.0",
     "@prisma/client": "^7.4.2",
+    "@types/cors": "^2.8.19",
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.3",
+    "lodash": "^4.18.1",
+    "multer": "^2.1.1",
     "pg": "^8.16.3"
   },
   "devDependencies": {
@@ -26,6 +30,8 @@
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.24",
+    "@types/multer": "^2.1.0",
     "@types/node": "^25.0.6",
     "@types/pg": "^8.16.0",
     "nodemon": "^3.1.11",

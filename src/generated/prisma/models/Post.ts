@@ -133,7 +133,7 @@ export type PostAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
   orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
   /**
@@ -145,19 +145,19 @@ export type PostAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned Posts
+   * Count returned posts
   **/
   _count?: true | PostCountAggregateInputType
   /**
@@ -756,15 +756,15 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   findFirstOrThrow<T extends PostFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, PostFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__PostClient<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Find zero or more Posts that matches the filter.
+   * Find zero or more posts that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
    * @param {PostFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
-   * // Get all Posts
+   * // Get all posts
    * const posts = await prisma.post.findMany()
    * 
-   * // Get first 10 Posts
+   * // Get first 10 posts
    * const posts = await prisma.post.findMany({ take: 10 })
    * 
    * // Only select the `id`
@@ -788,10 +788,10 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   create<T extends PostCreateArgs>(args: Prisma.SelectSubset<T, PostCreateArgs<ExtArgs>>): Prisma.Prisma__PostClient<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Create many Posts.
-   * @param {PostCreateManyArgs} args - Arguments to create many Posts.
+   * Create many posts.
+   * @param {PostCreateManyArgs} args - Arguments to create many posts.
    * @example
-   * // Create many Posts
+   * // Create many posts
    * const post = await prisma.post.createMany({
    *   data: [
    *     // ... provide data here
@@ -802,17 +802,17 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   createMany<T extends PostCreateManyArgs>(args?: Prisma.SelectSubset<T, PostCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Posts and returns the data saved in the database.
-   * @param {PostCreateManyAndReturnArgs} args - Arguments to create many Posts.
+   * Create many posts and returns the data saved in the database.
+   * @param {PostCreateManyAndReturnArgs} args - Arguments to create many posts.
    * @example
-   * // Create many Posts
+   * // Create many posts
    * const post = await prisma.post.createManyAndReturn({
    *   data: [
    *     // ... provide data here
    *   ]
    * })
    * 
-   * // Create many Posts and only return the `id`
+   * // Create many posts and only return the `id`
    * const postWithIdOnly = await prisma.post.createManyAndReturn({
    *   select: { id: true },
    *   data: [
@@ -857,10 +857,10 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   update<T extends PostUpdateArgs>(args: Prisma.SelectSubset<T, PostUpdateArgs<ExtArgs>>): Prisma.Prisma__PostClient<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
-   * Delete zero or more Posts.
-   * @param {PostDeleteManyArgs} args - Arguments to filter Posts to delete.
+   * Delete zero or more posts.
+   * @param {PostDeleteManyArgs} args - Arguments to filter posts to delete.
    * @example
-   * // Delete a few Posts
+   * // Delete a few posts
    * const { count } = await prisma.post.deleteMany({
    *   where: {
    *     // ... provide filter here
@@ -871,12 +871,12 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   deleteMany<T extends PostDeleteManyArgs>(args?: Prisma.SelectSubset<T, PostDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more Posts.
+   * Update zero or more posts.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
    * @param {PostUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
-   * // Update many Posts
+   * // Update many posts
    * const post = await prisma.post.updateMany({
    *   where: {
    *     // ... provide filter here
@@ -890,10 +890,10 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   updateMany<T extends PostUpdateManyArgs>(args: Prisma.SelectSubset<T, PostUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more Posts and returns the data updated in the database.
-   * @param {PostUpdateManyAndReturnArgs} args - Arguments to update many Posts.
+   * Update zero or more posts and returns the data updated in the database.
+   * @param {PostUpdateManyAndReturnArgs} args - Arguments to update many posts.
    * @example
-   * // Update many Posts
+   * // Update many posts
    * const post = await prisma.post.updateManyAndReturn({
    *   where: {
    *     // ... provide filter here
@@ -903,7 +903,7 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    *   ]
    * })
    * 
-   * // Update zero or more Posts and only return the `id`
+   * // Update zero or more posts and only return the `id`
    * const postWithIdOnly = await prisma.post.updateManyAndReturn({
    *   select: { id: true },
    *   where: {
@@ -940,15 +940,15 @@ export interface PostDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
 
 
   /**
-   * Count the number of Posts.
+   * Count the number of posts.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {PostCountArgs} args - Arguments to filter Posts to count.
+   * @param {PostCountArgs} args - Arguments to filter posts to count.
    * @example
-   * // Count the number of Posts
+   * // Count the number of posts
    * const count = await prisma.post.count({
    *   where: {
-   *     // ... the filter for the Posts we want to count
+   *     // ... the filter for the posts we want to count
    *   }
    * })
   **/
@@ -1188,31 +1188,31 @@ export type PostFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
   orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for Posts.
+   * Sets the position for searching for posts.
    */
   cursor?: Prisma.PostWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of Posts.
+   * Filter by unique combinations of posts.
    */
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
 }
@@ -1240,31 +1240,31 @@ export type PostFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
   orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for Posts.
+   * Sets the position for searching for posts.
    */
   cursor?: Prisma.PostWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of Posts.
+   * Filter by unique combinations of posts.
    */
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
 }
@@ -1286,31 +1286,31 @@ export type PostFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   include?: Prisma.PostInclude<ExtArgs> | null
   /**
-   * Filter, which Posts to fetch.
+   * Filter, which posts to fetch.
    */
   where?: Prisma.PostWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
   orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing Posts.
+   * Sets the position for listing posts.
    */
   cursor?: Prisma.PostWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
@@ -1343,7 +1343,7 @@ export type PostCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
  */
 export type PostCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many Posts.
+   * The data used to create many posts.
    */
   data: Prisma.PostCreateManyInput | Prisma.PostCreateManyInput[]
   skipDuplicates?: boolean
@@ -1362,7 +1362,7 @@ export type PostCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.PostOmit<ExtArgs> | null
   /**
-   * The data used to create many Posts.
+   * The data used to create many posts.
    */
   data: Prisma.PostCreateManyInput | Prisma.PostCreateManyInput[]
   skipDuplicates?: boolean
@@ -1403,15 +1403,15 @@ export type PostUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
  */
 export type PostUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update Posts.
+   * The data used to update posts.
    */
   data: Prisma.XOR<Prisma.PostUpdateManyMutationInput, Prisma.PostUncheckedUpdateManyInput>
   /**
-   * Filter which Posts to update
+   * Filter which posts to update
    */
   where?: Prisma.PostWhereInput
   /**
-   * Limit how many Posts to update.
+   * Limit how many posts to update.
    */
   limit?: number
 }
@@ -1429,15 +1429,15 @@ export type PostUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.PostOmit<ExtArgs> | null
   /**
-   * The data used to update Posts.
+   * The data used to update posts.
    */
   data: Prisma.XOR<Prisma.PostUpdateManyMutationInput, Prisma.PostUncheckedUpdateManyInput>
   /**
-   * Filter which Posts to update
+   * Filter which posts to update
    */
   where?: Prisma.PostWhereInput
   /**
-   * Limit how many Posts to update.
+   * Limit how many posts to update.
    */
   limit?: number
   /**
@@ -1503,11 +1503,11 @@ export type PostDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
  */
 export type PostDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which Posts to delete
+   * Filter which posts to delete
    */
   where?: Prisma.PostWhereInput
   /**
-   * Limit how many Posts to delete.
+   * Limit how many posts to delete.
    */
   limit?: number
 }

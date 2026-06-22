@@ -6,23 +6,28 @@ import {prisma} from "../../lib/prisma.ts";
 import {checkPostOwner} from "../utils/checkPostOwner.ts";
 import {Post} from "../generated/prisma/client.ts";
 import checkPostId from "../utils/checkPostId.ts";
+import {upload} from "../../multer.ts";
 
 const router = Router()
 
 
-router.post('/', checkAuth(), postCreateValidation, handleValidationErrors, async (req: Request, res: Response) => {
+router.post('/', checkAuth(), upload.single('image'), postCreateValidation, handleValidationErrors, async (req: Request, res: Response) => {
+
+    const photoUrl = req.file
+        ? `/uploads/posts/${req.file.filename}`
+        : null
+
     const post = await prisma.post.create({
         data: {
             title: req.body.title,
             description: req.body.description,
-            photo: req.body.photo,
+            photo: photoUrl,
             authorId: Number(req.userId)
         }
     });
     const {authorId, ...postData} = post
     res.json(postData)
 })
-
 
 // router.get('/:username', async (req: Request, res: Response) => {
 //     const posts = await prisma.post.findMany({
@@ -65,7 +70,6 @@ router.delete('/:id', checkAuth(), checkPostOwner(), checkPostId(), async (req: 
             }
         }
     )
-
     res.json({success: true})
 })
 
