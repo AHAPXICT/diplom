@@ -1,107 +1,171 @@
-import type {Request, Response} from 'express';
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import {Request, Response, Router} from "express";
 import {prisma} from "../../lib/prisma.ts";
-import {Router} from "express"
-import {loginValidation, registerValidation} from "../validations.ts";
-import handleValidationErrors from "../utils/handleValidationErrors.ts";
-import "dotenv/config";
 import _ from "lodash";
 import checkAuth from "../utils/checkAuth.ts";
-
+import {upload} from "../../multer.ts";
 
 const router = Router();
 
-router.post('/register', registerValidation, handleValidationErrors, async (req: Request, res: Response) => {
+router.get('/:username/posts', async (req, res) => {
+    try {
+        const { username } = req.params;
+        const page = Number(req.query.page) || 1;
+        const limit = 10;
 
-    console.log(req.body)
+        const user = await prisma.user.findUnique({
+            where: { username },
+            select: { id: true },
+        });
 
-    if(await prisma.user.findUnique({where: {email: req.body.email}})) {
-        return res.status(400).json({message: 'Пользователь уже существует'})
-    }
-
-    if(await prisma.user.findUnique({where: {username: req.body.username}})) {
-        return res.status(400).json(({message: 'Это имя уже занято'}))
-    }
-
-    const password = req.body.password
-    const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(password, salt)
-
-    const userPrisma = await prisma.user.create({
-        data: {
-            username: req.body.username,
-            email: req.body.email,
-            password: hash
+        if (!user) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
         }
-    })
 
-    const user = _.pick(userPrisma, ['id', 'email', 'username', 'birthday', 'profilePicture', 'createdAt', 'rating'])
-    const token = jwt.sign(
-        { id: user.id },
-        process.env.JWT_SECRET as string,
-        { expiresIn: '30d' }
-    )
-    return res.status(200).json({
-        user, token
-    })
-})
+        const [posts, total] = await Promise.all([
+            prisma.post.findMany({
+                where: {
+                    authorId: user.id,
+                },
+                skip: (page - 1) * limit,
+                take: limit,
 
-router.post('/login', loginValidation, handleValidationErrors, async (req: Request, res: Response) => {
-    console.log('login')
-    const userPrisma = await prisma.user.findUnique(
-        {
-            where: {email: req.body.email}
-        })
+                orderBy: {
+                    createdAt: 'desc',
+                },
 
-    if (!userPrisma) {
-        return res.status(401).json({
-            message: `Неверный логин или пароль`,
-        })
+                include: {
+                    author: {
+                        select: {
+                            id: true,
+                            username: true,
+                            profilePicture: true,
+                        },
+                    },
+                    Community: {
+                        select: {
+                            id: true,
+                            name: true,
+                            imageUrl: true,
+                        },
+                    },
+                    _count: {
+                        select: {
+                            Comment: true,
+                        },
+                    },
+                },
+            }),
+            prisma.post.count({
+                where: {
+                    authorId: user.id,
+                },
+            }),
+        ]);
+
+        const result = posts.map((post) => ({
+            id: post.id,
+            title: post.title,
+            description: post.description,
+            image: post.image,
+            viewsCount: post.viewsCount,
+            likesCount: post.likesCount,
+            createdAt: post.createdAt.toISOString(),
+            commentsCount: post._count.Comment,
+            author: post.author,
+            community: post.Community,
+        }));
+
+        res.json({
+            posts: result,
+            hasMore: page * limit < total,
+        });
+    } catch (error) {
+        console.error(`Error fetching posts for user ${req.params.username}:`, error);
+        res.status(500).json({ message: 'Ошибка при загрузке постов пользователя' });
     }
+});
 
-    const isValidPass = await bcrypt.compare(req.body.password, userPrisma.password)
-
-    if (!isValidPass) {
-        return res.status(401).json({
-            message: `Неверный логин или пароль`,
-        })
-    }
-
-    const user = _.pick(userPrisma, ['id', 'email', 'username', 'birthday', 'profilePicture', 'createdAt', 'rating'])
-    const token = jwt.sign(
-        { id: user.id },
-        process.env.JWT_SECRET as string,
-        { expiresIn: '30d' }
-    )
-
-    return res.status(200).json({
-        token, user
-    })
-})
-
-router.get('/user', async (req: Request, res: Response) => {
-    const userPrisma = await prisma.user.findUnique(
+router.get('/:username', async (req: Request, res: Response) => {
+    const user = await prisma.user.findUnique(
         {
-            where: {username: req.body.username}
+            where: {username: String(req.params.username)},
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                birthday: true,
+                profilePicture: true,
+                about: true,
+                createdAt: true,
+                rating: true,
+
+                _count: {
+                    select: {
+                        posts: true,
+                        comments: true
+                    }
+                }
+            }
         })
 
-    if (!userPrisma) {
+    if (!user) {
         return res.status(401).json({message: 'Не удалось получить пользователя'})
     }
-    const user = _.pick(userPrisma, ['id', 'email', 'username', 'birthday', 'profilePicture', 'createdAt', 'rating'])
-    //user.commentsCount = prisma.user.count
+
     return res.status(200).json(user)
 })
 
-router.get("/me", checkAuth(), async (req, res) => {
-    const user = await prisma.user.findUnique({
-        where: {
-            id: Number(req.userId)
+router.patch(
+    '/me',
+    checkAuth(),
+    upload.single('avatar'),
+    async (req: Request, res: Response) => {
+        try {
+            const updateData: any = {
+                about: req.body.about || null,
+                birthday: req.body.birthday
+                    ? new Date(req.body.birthday)
+                    : null
+            };
+
+            if (req.file) {
+                updateData.profilePicture =
+                    `/uploads/avatars/${req.file.filename}`;
+            }
+
+            const user = await prisma.user.update({
+                where: {
+                    id: Number(req.userId)
+                },
+                data: updateData,
+                select: {
+                    id: true,
+                    username: true,
+                    email: true,
+                    birthday: true,
+                    profilePicture: true,
+                    about: true,
+                    createdAt: true,
+                    rating: true,
+
+                    _count: {
+                        select: {
+                            posts: true,
+                            comments: true
+                        }
+                    }
+                }
+            });
+            res.json(user);
+
+        } catch (err) {
+            console.error(err);
+
+            res.status(500).json({
+                message: 'Не удалось обновить профиль'
+            });
         }
-    });
+    }
+);
 
-    res.json(user);
-});
-
-export default router
+export default router;

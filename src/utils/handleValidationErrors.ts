@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import router from "../routes/UserController.ts";
+import router from "../routes/AuthController.ts";
 
 
 function validate(

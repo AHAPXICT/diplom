@@ -2,13 +2,22 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        if (req.path.includes("avatar")) {
+        if (file.fieldname === "avatar") {
             cb(null, "uploads/avatars");
-        } else if (req.path.includes("community")) {
-            cb(null, "uploads/communities");
-        } else if (req.path.includes("post")) {
-            cb(null, "uploads/posts");
+            return;
         }
+
+        if (file.fieldname === "communityImage") {
+            cb(null, "uploads/communities");
+            return;
+        }
+
+        if (file.fieldname === "postImage") {
+            cb(null, "uploads/posts");
+            return;
+        }
+
+        cb(new Error("Unknown upload type"), "");
     },
 
     filename: (req, file, cb) => {
@@ -16,5 +25,8 @@ const storage = multer.diskStorage({
     }
 });
 export const upload = multer({
-    storage
+    storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024
+    }
 })

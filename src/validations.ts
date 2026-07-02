@@ -16,7 +16,7 @@ minDate.setFullYear(now.getFullYear() - 140);
 export const registerValidation = [
     email,
     password,
-    username
+    username    
 ]
 
 export const profileChangeValidation = [

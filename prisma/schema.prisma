@@ -29,7 +29,7 @@ model Post {
   date         DateTime   @default(now())
   title        String?
   description  String?
-  post         String?
+  image        String?
   viewsCount   Int        @default(0)
   likesCount   Int        @default(0)
   createdAt    DateTime   @default(now())
